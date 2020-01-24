@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using WebApplicationAPI.Data;
+using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI.Installers {
   public class DataInstaller : IInstaller {
@@ -17,6 +18,8 @@ namespace WebApplicationAPI.Installers {
       services
         .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<DataContext>();
+
+      services.AddSingleton<IPostService, PostService>();
     }
   }
 }
