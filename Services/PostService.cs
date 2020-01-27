@@ -35,5 +35,14 @@ namespace WebApplicationAPI.Services {
       this.posts[index] = post;
       return true;
     }
+
+    public bool DeletePost(Guid postId) {
+      Post post = this.GetPostById(postId);
+      if (post == null) {
+        return false;
+      }
+      this.posts.Remove(post);
+      return true;
+    }
   }
 }

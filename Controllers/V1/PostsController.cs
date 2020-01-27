@@ -59,9 +59,20 @@ namespace WebApplicationAPI.Controllers.V1 {
         , Name = request.Name
       };
 
-      bool isUpdated = this.postService.UpdatePost(post);
-      if (isUpdated) {
+      bool hasUpdated = this.postService.UpdatePost(post);
+      if (hasUpdated) {
         return this.Ok(post);
+      }
+      return this.NotFound();
+    }
+
+    [HttpDelete(ApiRoutes.Posts.Delete)]
+    public IActionResult Delete(
+        [FromRoute] Guid postId
+    ) {
+      bool hasDeleted = this.postService.DeletePost(postId);
+      if (hasDeleted) {
+        return this.NoContent();
       }
       return this.NotFound();
     }
