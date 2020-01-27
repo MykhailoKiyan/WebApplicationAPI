@@ -1,48 +1,61 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+using WebApplicationAPI.Data;
 using WebApplicationAPI.Domain;
 using WebApplicationAPI.ExtensionMethods;
 
 namespace WebApplicationAPI.Services {
   public class PostService : IPostService {
-    private readonly List<Post> posts;
+    private readonly DataContext dataContext;
 
-    public PostService() {
-      this.posts = new List<Post>();
-      Enumerable
-        .Range(0, 5)
-        .ForEach(item =>
-          this.posts.Add(new Post {
-              Id = Guid.NewGuid()
-            , Name = $"Post Name {item}"
-          }));
+    public PostService(DataContext dataContext) {
+      this.dataContext = dataContext;
     }
 
-    public Post GetPostById(Guid postId) {
-      return this.posts.SingleOrDefault(post => post.Id == postId);
+    public async Task<Post> GetPostByIdAsync(Guid postId) {
+      return await this.dataContext.Posts.SingleOrDefaultAsync(post => post.Id == postId);
     }
 
-    public List<Post> GetPosts() {
-      return this.posts;
+    public async Task<List<Post>> GetPostsAsync() {
+      return await this.dataContext.Posts.ToListAsync();
     }
 
-    public bool UpdatePost(Post post) {
-      if (this.GetPostById(post.Id) == null) {
+    public async Task<bool> CreatePostAsync(Post post) {
+      await this.dataContext.AddAsync(post);
+      int rowsCreated = await this.dataContext.SaveChangesAsync();
+      if (rowsCreated == 1) {
+        return true;
+      } else {
         return false;
       }
-      int index = this.posts.FindIndex(item => item.Id == post.Id);
-      this.posts[index] = post;
-      return true;
     }
 
-    public bool DeletePost(Guid postId) {
-      Post post = this.GetPostById(postId);
+    public async Task<bool> UpdatePostAsync(Post post) {
+      this.dataContext.Posts!.Update(post);
+      int rowsUpdated = await this.dataContext.SaveChangesAsync();
+      if (rowsUpdated == 1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public async Task<bool> DeletePostAsync(Guid postId) {
+      Post post = await this.GetPostByIdAsync(postId);
       if (post == null) {
         return false;
       }
-      this.posts.Remove(post);
-      return true;
+      this.dataContext.Posts!.Remove(post);
+      int rowsDeleted = await this.dataContext.SaveChangesAsync();
+      if (rowsDeleted == 1) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }

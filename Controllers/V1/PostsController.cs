@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 
 using WebApplicationAPI.Domain;
@@ -7,6 +6,7 @@ using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Contracts.V1.Responses;
 using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Services;
+using System.Threading.Tasks;
 
 namespace WebApplicationAPI.Controllers.V1 {
   public class PostsController : Controller {
@@ -18,16 +18,16 @@ namespace WebApplicationAPI.Controllers.V1 {
       this.postService = postService;
     }
 
-        [HttpGet(ApiRoutes.Posts.GetAll)]
-    public IActionResult GetAll() { 
-      return Ok(this.postService.GetPosts());
+    [HttpGet(ApiRoutes.Posts.GetAll)]
+    public async Task<IActionResult> GetAll() { 
+      return Ok(await this.postService.GetPostsAsync());
     }
 
     [HttpGet(ApiRoutes.Posts.Get)]
-    public IActionResult Get(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid postId
     ) {
-      Post post = this.postService.GetPostById(postId);
+      Post post = await this.postService.GetPostByIdAsync(postId);
       if (post == null) {
         return this.NotFound();
       }
@@ -35,14 +35,11 @@ namespace WebApplicationAPI.Controllers.V1 {
     }
 
     [HttpPost(ApiRoutes.Posts.Create)]
-    public IActionResult Create(
+    public async Task<IActionResult> Create(
       [FromBody] PostCreateRequest postRequest
     ) {
-      var post = new Post { Id = postRequest.Id };
-      if (post.Id == Guid.Empty) {
-        post.Id = Guid.NewGuid();
-      }
-      //this.posts.Add(post);
+      var post = new Post { Name = postRequest.Name };
+      await this.postService.CreatePostAsync(post);
       var baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
       var locationUri = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
       var response = new PostResponse { Id = post.Id };
@@ -50,16 +47,16 @@ namespace WebApplicationAPI.Controllers.V1 {
     }
 
     [HttpPut(ApiRoutes.Posts.Update)]
-    public IActionResult Update(
+    public async Task<IActionResult> Update(
         [FromRoute] Guid              postId
-      , [FromBody]  UpdatePostRequest request
+      , [FromBody]  PostUpdateRequest request
     ) {
       Post post = new Post {
           Id = postId
         , Name = request.Name
       };
 
-      bool hasUpdated = this.postService.UpdatePost(post);
+      bool hasUpdated = await this.postService.UpdatePostAsync(post);
       if (hasUpdated) {
         return this.Ok(post);
       }
@@ -67,14 +64,15 @@ namespace WebApplicationAPI.Controllers.V1 {
     }
 
     [HttpDelete(ApiRoutes.Posts.Delete)]
-    public IActionResult Delete(
+    public async Task<IActionResult> Delete(
         [FromRoute] Guid postId
     ) {
-      bool hasDeleted = this.postService.DeletePost(postId);
+      bool hasDeleted = await this.postService.DeletePostAsync(postId);
       if (hasDeleted) {
         return this.NoContent();
+      } else {
+        return this.NotFound();
       }
-      return this.NotFound();
     }
   }
 }
