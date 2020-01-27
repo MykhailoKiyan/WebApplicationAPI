@@ -48,5 +48,22 @@ namespace WebApplicationAPI.Controllers.V1 {
       var response = new PostResponse { Id = post.Id };
       return this.Created(locationUri, response);
     }
+
+    [HttpPut(ApiRoutes.Posts.Update)]
+    public IActionResult Update(
+        [FromRoute] Guid              postId
+      , [FromBody]  UpdatePostRequest request
+    ) {
+      Post post = new Post {
+          Id = postId
+        , Name = request.Name
+      };
+
+      bool isUpdated = this.postService.UpdatePost(post);
+      if (isUpdated) {
+        return this.Ok(post);
+      }
+      return this.NotFound();
+    }
   }
 }

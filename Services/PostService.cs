@@ -19,13 +19,21 @@ namespace WebApplicationAPI.Services {
           }));
     }
 
-
     public Post GetPostById(Guid postId) {
       return this.posts.SingleOrDefault(post => post.Id == postId);
     }
 
     public List<Post> GetPosts() {
       return this.posts;
+    }
+
+    public bool UpdatePost(Post post) {
+      if (this.GetPostById(post.Id) == null) {
+        return false;
+      }
+      int index = this.posts.FindIndex(item => item.Id == post.Id);
+      this.posts[index] = post;
+      return true;
     }
   }
 }
