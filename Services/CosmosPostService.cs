@@ -48,6 +48,7 @@ namespace WebApplicationAPI.Services {
 
     public async Task<bool> UpdatePostAsync(Post post) {
       CosmosPostDto cosmosPost = await this.cosmosStore.FindAsync(post.Id.ToString(), post.Id.ToString());
+      cosmosPost.Name = post.Name;
       CosmosResponse<CosmosPostDto> response = await this.cosmosStore.UpdateAsync(cosmosPost);
       return response.IsSuccess;
     }
