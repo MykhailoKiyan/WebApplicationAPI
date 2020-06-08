@@ -1,6 +1,11 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+
+using WebApplicationAPI.Options;
 
 namespace WebApplicationAPI.Installers {
   public class MvcInstaller : IInstaller {
@@ -8,11 +13,55 @@ namespace WebApplicationAPI.Installers {
         IServiceCollection services,
         IConfiguration     configuration
     ) {
+      var jwtSettings = new JwtSettings();
+      configuration.Bind(nameof(jwtSettings), jwtSettings);
+      services.AddSingleton(jwtSettings);
+
       services.AddMvc();
 
+      services
+        .AddAuthentication(c => {
+          c.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+          c.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+          c.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(c => {
+          c.SaveToken = true;
+          c.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = true
+          };
+        });
+
       // Register the Swagger generator, defining 1 or more Swagger documents
-      services.AddSwaggerGen( setupAction =>
-      setupAction.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" }));
+      services.AddSwaggerGen( s => {
+        s.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+        s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+          Name = "Authorization",
+          Type = SecuritySchemeType.ApiKey,
+          Scheme = "Bearer",
+          BearerFormat = "JWT",
+          In = ParameterLocation.Header,
+          Description = "JWT Authorization header using the Bearer scheme."
+        });
+
+        s.AddSecurityRequirement(new OpenApiSecurityRequirement {
+          {
+            new OpenApiSecurityScheme {
+              Reference = new OpenApiReference {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+              }
+            },
+            new string[] {}
+          }
+        });
+      });
     }
   }
 }
