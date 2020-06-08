@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WebApplicationAPI.Domain;
 
 namespace WebApplicationAPI.Installers {
+  /*
   public class CosmosInstaller : IInstaller {
     public void InstallServices(IServiceCollection services, IConfiguration configuration) {
       var cosmosStoreSettings = new CosmosStoreSettings(
@@ -20,4 +21,5 @@ namespace WebApplicationAPI.Installers {
       services.AddCosmosStore<CosmosPostDto>(cosmosStoreSettings);
     }
   }
+  */
 }
