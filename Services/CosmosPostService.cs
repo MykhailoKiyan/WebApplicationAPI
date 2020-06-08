@@ -7,7 +7,7 @@ using Cosmonaut.Extensions;
 using Cosmonaut.Response;
 
 using WebApplicationAPI.Domain;
-
+/*
 namespace WebApplicationAPI.Services {
   public class CosmosPostService : IPostService {
     private readonly ICosmosStore<CosmosPostDto> cosmosStore;
@@ -47,3 +47,4 @@ namespace WebApplicationAPI.Services {
     }
   }
 }
+*/

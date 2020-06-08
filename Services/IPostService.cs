@@ -11,5 +11,6 @@ namespace WebApplicationAPI.Services {
     Task<bool> CreatePostAsync(Post post);
     Task<bool> UpdatePostAsync(Post post);
     Task<bool> DeletePostAsync(Guid postId);
+    Task<bool> IsUserOwnsPostAsync(Guid postId, string userId);
   }
 }

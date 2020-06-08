@@ -46,5 +46,11 @@ namespace WebApplicationAPI.Services {
       if (rowsDeleted == 1) return true;
       else return false;
     }
+
+    public async Task<bool> IsUserOwnsPostAsync(Guid postId, string userId) {
+      Post post = await this.dataContext.Posts.AsNoTracking().SingleOrDefaultAsync(p => p.Id == postId);
+      if (post == null) return false;
+      return post.UserId == userId;
+    }
   }
 }

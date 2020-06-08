@@ -10,6 +10,7 @@ using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Contracts.V1.Responses;
 using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Services;
+using WebApplicationAPI.ExtensionMethods;
 
 namespace WebApplicationAPI.Controllers.V1 {
   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -41,7 +42,10 @@ namespace WebApplicationAPI.Controllers.V1 {
     public async Task<IActionResult> Create(
         [FromBody] PostCreateRequest postRequest
     ) {
-      var post = new Post { Name = postRequest.Name };
+      var post = new Post {
+        Name = postRequest.Name,
+        UserId = HttpContext.GetUserId()
+      };
       await this.postService.CreatePostAsync(post);
       string baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
       string locationUri = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
@@ -54,7 +58,11 @@ namespace WebApplicationAPI.Controllers.V1 {
         [FromRoute] Guid              postId,
         [FromBody]  PostUpdateRequest request
     ) {
-      var post = new Post { Id = postId, Name = request.Name };
+      string userId = HttpContext.GetUserId();
+      bool isUserOwnsThePost = await this.postService.IsUserOwnsPostAsync(postId, userId);
+      if (!isUserOwnsThePost) return this.BadRequest(new { errors = "You do not own this post" });
+      var post = await this.postService.GetPostByIdAsync(postId);
+      post.Name = request.Name;
       bool hasUpdated = await this.postService.UpdatePostAsync(post);
       if (hasUpdated) return this.Ok(post);
       else return this.NotFound();
@@ -64,6 +72,9 @@ namespace WebApplicationAPI.Controllers.V1 {
     public async Task<IActionResult> Delete(
         [FromRoute] Guid postId
     ) {
+      string userId = HttpContext.GetUserId();
+      bool isUserOwnsThePost = await this.postService.IsUserOwnsPostAsync(postId, userId);
+      if (!isUserOwnsThePost) return this.BadRequest(new { errors = "You do not own this post" });
       bool hasDeleted = await this.postService.DeletePostAsync(postId);
       if (hasDeleted) return this.NoContent();
       else return this.NotFound();

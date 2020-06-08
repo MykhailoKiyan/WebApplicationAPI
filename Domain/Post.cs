@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplicationAPI.Domain {
   public class Post {
@@ -7,5 +9,10 @@ namespace WebApplicationAPI.Domain {
     public Guid Id { get; set; }
 
     public string? Name { get;  set; }
+
+    public string UserId { get; set; }
+
+    [ForeignKey(nameof(UserId))]
+    public IdentityUser User { get; set; }
   }
 }
