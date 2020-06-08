@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using WebApplicationAPI.Domain;
 using WebApplicationAPI.Contracts.V1;
@@ -10,6 +12,7 @@ using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI.Controllers.V1 {
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
   public class PostsController : Controller {
     private readonly IPostService postService;
 

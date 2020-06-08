@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 
 using WebApplicationAPI.Options;
+using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI.Installers {
   public class MvcInstaller : IInstaller {
@@ -16,6 +17,8 @@ namespace WebApplicationAPI.Installers {
       var jwtSettings = new JwtSettings();
       configuration.Bind(nameof(jwtSettings), jwtSettings);
       services.AddSingleton(jwtSettings);
+
+      services.AddScoped<IIdentityService, IdentityService>();
 
       services.AddMvc();
 
