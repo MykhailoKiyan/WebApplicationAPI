@@ -22,14 +22,30 @@ namespace WebApplicationAPI.Controllers.V1 {
 
       var authResponse = await this.identityService.RegisterAsync(request.Email, request.Password);
       if (!authResponse.Success) return this.BadRequest(new AuthFailResponse { Errors = authResponse.Errors });
-      else return this.Ok(new AuthSuccessResponse { Token = authResponse.Token });
+      else return this.Ok(new AuthSuccessResponse {
+        Token = authResponse.Token,
+        RefreshToken = authResponse.RefreshToken
+      });
     }
 
     [HttpPost(ApiRoutes.Identity.Login)]
     public async Task<ActionResult> Login ([FromBody] UserLoginRequest request) {
       var authResponse = await this.identityService.LoginAsync(request.Email, request.Password);
       if (!authResponse.Success) return this.BadRequest(new AuthFailResponse { Errors = authResponse.Errors });
-      else return this.Ok(new AuthSuccessResponse { Token = authResponse.Token });
+      else return this.Ok(new AuthSuccessResponse {
+        Token = authResponse.Token,
+        RefreshToken = authResponse.RefreshToken
+      });
+    }
+
+    [HttpPost(ApiRoutes.Identity.Refresh)]
+    public async Task<ActionResult> Refresh ([FromBody] RefreshTokenRequest request) {
+      var authResponse = await this.identityService.RefreshTokenAsync(request.Token, request.RefreshToken);
+      if (!authResponse.Success) return this.BadRequest(new AuthFailResponse { Errors = authResponse.Errors });
+      else return this.Ok(new AuthSuccessResponse {
+        Token = authResponse.Token,
+        RefreshToken = authResponse.RefreshToken
+      });
     }
   }
 }

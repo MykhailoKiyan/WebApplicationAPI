@@ -22,6 +22,17 @@ namespace WebApplicationAPI.Installers {
 
       services.AddMvc();
 
+      var tokenValidationParameters = new TokenValidationParameters {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        RequireExpirationTime = false,
+        ValidateLifetime = true
+      };
+
+      services.AddSingleton(tokenValidationParameters);
+
       services
         .AddAuthentication(c => {
           c.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -30,14 +41,7 @@ namespace WebApplicationAPI.Installers {
         })
         .AddJwtBearer(c => {
           c.SaveToken = true;
-          c.TokenValidationParameters = new TokenValidationParameters {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            RequireExpirationTime = false,
-            ValidateLifetime = true
-          };
+          c.TokenValidationParameters = tokenValidationParameters;
         });
 
       // Register the Swagger generator, defining 1 or more Swagger documents
