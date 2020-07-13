@@ -1,8 +1,30 @@
-version: '3.4'
+version: '3.5'
 
+networks:
+  localdev:
+    name: localdev
+    
 services:
-  webapplicationapi:
-    image: ${DOCKER_REGISTRY-}webapplicationapi
+  main-api:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "7000:80"
+      - "7001:443"
+    depends_on:
+      - db-server
+    networks:
+      - localdev
+        
+  db-server:
+    image: microsoft/mssql-server-linux:2017-latest
+    container_name: db-server
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=MyStrong_Passw0rd
+    ports:
+      - "1400:1433"
+    networks:
+      - localdev

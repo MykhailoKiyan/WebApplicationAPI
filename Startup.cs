@@ -28,7 +28,7 @@ namespace WebApplicationAPI {
         IApplicationBuilder app
       , IWebHostEnvironment env
     ) {
-      if (env.IsDevelopment()) {
+      /*if (env.IsDevelopment()) {*/
         app.UseDeveloperExceptionPage();
         app.UseDatabaseErrorPage();
         SwaggerOptions swaggerOptions = this.Configuration
@@ -39,11 +39,11 @@ namespace WebApplicationAPI {
         // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint
         app.UseSwaggerUI(options =>
           options.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description));
-      } else {
+      /*} else {*/
         // The default HSTS value is 30 days. You may want to change this for production scenarios,
         // see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
-      }
+      /*}*/
       app.UseHttpsRedirection();
       app.UseStaticFiles();
       app.UseRouting();
