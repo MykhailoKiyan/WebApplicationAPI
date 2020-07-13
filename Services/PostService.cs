@@ -20,7 +20,10 @@ namespace WebApplicationAPI.Services {
     }
 
     public async Task<List<Post>> GetPostsAsync() {
-      List<Post> posts = await this.dataContext.Posts.ToListAsync();
+      List<Post> posts = await this.dataContext.Posts
+        .Include(x => x.User)
+        .AsNoTracking()
+        .ToListAsync();
       return posts;
     }
 
