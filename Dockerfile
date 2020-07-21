@@ -7,14 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
+ARG BUILDCONFIG=RELEASE
+ARG VERSION=1.0.0
 COPY ["WebApplicationAPI.csproj", ""]
 RUN dotnet restore "./WebApplicationAPI.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "WebApplicationAPI.csproj" -c Release -o /app/build
+RUN dotnet build "WebApplicationAPI.csproj" -c $BUILDCONFIG -o /app/build /p:Version=$VERSION
 
 FROM build AS publish
-RUN dotnet publish "WebApplicationAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "WebApplicationAPI.csproj" -c $BUILDCONFIG -o /app/publish /p:Version=$VERSION
 
 FROM base AS final
 WORKDIR /app
