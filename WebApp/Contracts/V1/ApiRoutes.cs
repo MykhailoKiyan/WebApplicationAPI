@@ -21,7 +21,7 @@ namespace WebApplicationAPI.Contracts.V1 {
     }
 
     public static class Identity {
-      private const string ControllerUrl = Base + "identity";
+      private const string ControllerUrl = Base + "/identity";
 
       public const string Login = ControllerUrl + "/login";
 
