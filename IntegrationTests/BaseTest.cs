@@ -11,7 +11,6 @@ using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Data;
 using Xunit;
-// using WebApplicationAPI.IntegrationTests.ExtensionMethods;
 using WebApplicationAPI.Contracts.V1.Responses;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -20,11 +19,11 @@ namespace WebApplicationAPI.IntegrationTests {
   [Trait("Category", "Integration")]
   public abstract class BaseTest {
     private readonly HttpClient client;
-    private readonly InMemoryDatabaseRoot databaseRoot = new InMemoryDatabaseRoot();
-
     protected HttpClient Client => this.client;
 
-    public BaseTest() {
+    public BaseTest() : this(new InMemoryDatabaseRoot()) { }
+
+    public BaseTest(InMemoryDatabaseRoot databaseRoot) {
       var app = new WebApplicationFactory<Startup>()
         .WithWebHostBuilder(builder => {
           builder.ConfigureServices(services => {
@@ -34,7 +33,7 @@ namespace WebApplicationAPI.IntegrationTests {
 
             // Add Db Context using an in-memory database for testing.
             services.AddDbContext<DataContext>(options => {
-              options.UseInMemoryDatabase("InMemoryDbForTesting", this.databaseRoot);
+              options.UseInMemoryDatabase("InMemoryDbForTesting", databaseRoot);
             });
           });
         });

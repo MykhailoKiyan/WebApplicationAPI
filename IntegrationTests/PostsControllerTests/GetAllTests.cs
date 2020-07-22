@@ -7,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Domain;
-//using WebApplicationAPI.IntegrationTests.ExtensionMethods;
 using Xunit;
 
 namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
   public class GetAllTests : BaseTest {
+
     [Fact]
     public async Task GetAll_WithoutAnyPosts_ShouldReturnEmptyResponse()
     {
