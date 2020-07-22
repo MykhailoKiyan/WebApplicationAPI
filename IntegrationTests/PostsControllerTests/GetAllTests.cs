@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Domain;
+//using WebApplicationAPI.IntegrationTests.ExtensionMethods;
 using Xunit;
 
 namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
