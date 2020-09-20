@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Identity;
 namespace WebApplicationAPI.Domain {
   public class RefreshToken {
     [Key]
-    public string Token { get; set; } = Guid.NewGuid().ToString().ToLowerInvariant();
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string Token { get; set; }
 
     public string JwtId { get; set; }
 

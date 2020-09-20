@@ -11,6 +11,7 @@ using WebApplicationAPI.Contracts.V1.Responses;
 using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Services;
 using WebApplicationAPI.ExtensionMethods;
+using System.Linq;
 
 namespace WebApplicationAPI.Controllers.V1 {
   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -42,9 +43,11 @@ namespace WebApplicationAPI.Controllers.V1 {
     public async Task<IActionResult> Create(
         [FromBody] PostCreateRequest postRequest
     ) {
+      var newPostId = Guid.NewGuid();
       var post = new Post {
         Name = postRequest.Name,
-        UserId = HttpContext.GetUserId()
+        UserId = this.HttpContext.GetUserId(),
+        Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x}).ToList()
       };
       await this.postService.CreatePostAsync(post);
       string baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
@@ -55,8 +58,8 @@ namespace WebApplicationAPI.Controllers.V1 {
 
     [HttpPut(ApiRoutes.Posts.Update)]
     public async Task<IActionResult> Update(
-        [FromRoute] Guid              postId,
-        [FromBody]  PostUpdateRequest request
+        [FromRoute] Guid postId,
+        [FromBody] PostUpdateRequest request
     ) {
       string userId = HttpContext.GetUserId();
       bool isUserOwnsThePost = await this.postService.IsUserOwnsPostAsync(postId, userId);

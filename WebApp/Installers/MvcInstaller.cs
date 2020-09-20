@@ -12,7 +12,7 @@ namespace WebApplicationAPI.Installers {
   public class MvcInstaller : IInstaller {
     public void InstallServices(
         IServiceCollection services,
-        IConfiguration     configuration
+        IConfiguration configuration
     ) {
       var jwtSettings = new JwtSettings();
       configuration.Bind(nameof(jwtSettings), jwtSettings);
@@ -44,8 +44,11 @@ namespace WebApplicationAPI.Installers {
           c.TokenValidationParameters = tokenValidationParameters;
         });
 
+      services
+        .AddAuthentication();
+
       // Register the Swagger generator, defining 1 or more Swagger documents
-      services.AddSwaggerGen( s => {
+      services.AddSwaggerGen(s => {
         s.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 
         s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {

@@ -1,3 +1,5 @@
+using System.Buffers.Text;
+
 namespace WebApplicationAPI.Contracts.V1 {
   public static class ApiRoutes {
     public const string Root = "api";
@@ -28,6 +30,10 @@ namespace WebApplicationAPI.Contracts.V1 {
       public const string Register = ControllerUrl + "/register";
 
       public const string Refresh = ControllerUrl + "/refresh";
+    }
+
+    public static class Tags {
+      public const string GetAll = Base + "/tags";
     }
   }
 }
