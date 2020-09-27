@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,6 @@ using WebApplicationAPI.Contracts.V1.Responses;
 using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Services;
 using WebApplicationAPI.ExtensionMethods;
-using System.Linq;
 
 namespace WebApplicationAPI.Controllers.V1 {
   [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -47,7 +47,7 @@ namespace WebApplicationAPI.Controllers.V1 {
       var post = new Post {
         Name = postRequest.Name,
         UserId = this.HttpContext.GetUserId(),
-        Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x}).ToList()
+        //Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x}).ToList()
       };
       await this.postService.CreatePostAsync(post);
       string baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";

@@ -6,7 +6,7 @@ namespace WebApplicationAPI.Data {
   public class DataContext : IdentityDbContext {
     public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-    //public DbSet<Post> Posts { get; set; }
+    public DbSet<Post> Posts { get; set; }
 
     //public DbSet<Tag> Tags { get; set; }
 

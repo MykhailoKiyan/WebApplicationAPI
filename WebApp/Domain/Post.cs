@@ -13,9 +13,11 @@ namespace WebApplicationAPI.Domain {
 
     public string UserId { get; set; }
 
-    [ForeignKey(nameof(UserId))]
-    public IdentityUser User { get; set; }
+  [ForeignKey(nameof(UserId))]
+  public IdentityUser User { get; set; }
 
-    public virtual List<PostTag> Tags { get; set; }
+  /*
+  public virtual List<PostTag> Tags { get; set; }
+  */
   }
 }
