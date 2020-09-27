@@ -12,7 +12,7 @@ namespace WebApplicationAPI.Data {
 
     //public DbSet<PostTag> PostTags { get; set; }
 
-    //public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder) {
       base.OnModelCreating(builder);
