@@ -7,20 +7,20 @@ using WebApplicationAPI.Data;
 using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI.Installers {
-  public class DataInstaller : IInstaller {
-    public void InstallServices(
-        IServiceCollection services,
-        IConfiguration     configuration
-    ) {
-      string connectionString = configuration.GetConnectionString("DefaultConnection");
-      services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+    public class DataInstaller : IInstaller {
+        public void InstallServices(
+                IServiceCollection services,
+                IConfiguration configuration
+        ) {
+            string connectionString = configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
-      services
-        .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-        .AddEntityFrameworkStores<DataContext>();
+            services
+              .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+              .AddEntityFrameworkStores<DataContext>();
 
-      services.AddScoped<IPostService, PostService>();
-      services.AddSingleton<IPostService, CosmosPostService>();
+            services.AddScoped<IPostService, PostService>();
+            services.AddSingleton<IPostService, CosmosPostService>();
+        }
     }
-  }
 }

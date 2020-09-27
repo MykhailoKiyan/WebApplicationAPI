@@ -7,19 +7,18 @@ using WebApplicationAPI.Domain;
 
 namespace WebApplicationAPI.Installers {
 
-  public class CosmosInstaller : IInstaller {
-    public void InstallServices(IServiceCollection services, IConfiguration configuration) {
-      var cosmosStoreSettings = new CosmosStoreSettings(
-          configuration["CosmosSettings:DatabaseName"]
-        , configuration["CosmosSettings:AccountUri"]
-        , configuration["CosmosSettings:AccountKey"]
-        , new ConnectionPolicy {
-          ConnectionMode = ConnectionMode.Direct
-          ,
-          ConnectionProtocol = Protocol.Tcp
+    public class CosmosInstaller : IInstaller {
+        public void InstallServices(IServiceCollection services, IConfiguration configuration) {
+            var cosmosStoreSettings = new CosmosStoreSettings(
+                configuration["CosmosSettings:DatabaseName"],
+                configuration["CosmosSettings:AccountUri"],
+                configuration["CosmosSettings:AccountKey"],
+                new ConnectionPolicy {
+                  ConnectionMode = ConnectionMode.Direct,
+                  ConnectionProtocol = Protocol.Tcp
+                }
+            );
+            services.AddCosmosStore<CosmosPostDto>(cosmosStoreSettings);
         }
-      );
-      services.AddCosmosStore<CosmosPostDto>(cosmosStoreSettings);
     }
-  }
 }
