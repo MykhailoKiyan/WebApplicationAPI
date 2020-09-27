@@ -30,7 +30,7 @@ namespace WebApplicationAPI {
     ) {
       /*if (env.IsDevelopment()) {*/
         app.UseDeveloperExceptionPage();
-        app.UseDatabaseErrorPage();
+        //app.UseDatabaseErrorPage();
         SwaggerOptions swaggerOptions = this.Configuration
           .GetSection(nameof(SwaggerOptions))
           .Get<SwaggerOptions>();

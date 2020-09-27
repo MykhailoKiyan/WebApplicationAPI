@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -68,10 +68,11 @@ namespace WebApplicationAPI.Services {
         if (existingTag != null) continue;
         await this.dataContext.Tags.AddAsync(new Tag {
           Name = tag.TagName,
-          CreatedOn = DateTime.UtcNow/*,
-          CreatorId = post.UserId*/
+          CreatedOn = DateTime.UtcNow,
+          CreatorId = post.UserId
         });
       }
     }
   }
 }
+*/

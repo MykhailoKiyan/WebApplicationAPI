@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using Cosmonaut.Extensions;
 using Cosmonaut.Response;
 
 using WebApplicationAPI.Domain;
-/*
+
 namespace WebApplicationAPI.Services {
   public class CosmosPostService : IPostService {
     private readonly ICosmosStore<CosmosPostDto> cosmosStore;
