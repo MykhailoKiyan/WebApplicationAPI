@@ -19,8 +19,8 @@ namespace WebApplicationAPI.Installers {
         .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<DataContext>();
 
-      // services.AddScoped<IPostService, PostService>();
-      // services.AddSingleton<IPostService, CosmosPostService>();
+      services.AddScoped<IPostService, PostService>();
+      services.AddSingleton<IPostService, CosmosPostService>();
     }
   }
 }

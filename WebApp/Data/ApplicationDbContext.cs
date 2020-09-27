@@ -17,7 +17,6 @@ namespace WebApplicationAPI.Data {
     protected override void OnModelCreating(ModelBuilder builder) {
       base.OnModelCreating(builder);
       builder.Entity<PostTag>().HasKey(x => new { x.PostId, x.TagName });
-      // builder.Entity<PostTag>().Ignore(xx => xx.Post).HasKey(x => new { x.PostId, x.TagName });
     }
   }
 }

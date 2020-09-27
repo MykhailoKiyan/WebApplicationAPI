@@ -47,7 +47,7 @@ namespace WebApplicationAPI.Controllers.V1 {
       var post = new Post {
         Name = postRequest.Name,
         UserId = this.HttpContext.GetUserId(),
-        //Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x}).ToList()
+        Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x}).ToList()
       };
       await this.postService.CreatePostAsync(post);
       string baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
@@ -59,7 +59,7 @@ namespace WebApplicationAPI.Controllers.V1 {
     [HttpPut(ApiRoutes.Posts.Update)]
     public async Task<IActionResult> Update(
         [FromRoute] Guid postId,
-        [FromBody] PostUpdateRequest request
+        [FromBody]  PostUpdateRequest request
     ) {
       string userId = HttpContext.GetUserId();
       bool isUserOwnsThePost = await this.postService.IsUserOwnsPostAsync(postId, userId);

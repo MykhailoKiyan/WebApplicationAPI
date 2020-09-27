@@ -1,4 +1,3 @@
-/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +45,9 @@ namespace WebApplicationAPI.Services {
       CosmosResponse<CosmosPostDto> response = await this.cosmosStore.UpdateAsync(cosmosPost);
       return response.IsSuccess;
     }
+
+    public Task<bool> IsUserOwnsPostAsync(Guid postId, string userId) => throw new NotImplementedException();
+
+    public Task<IEnumerable<Tag>> GetAllTagsAsync() => throw new NotImplementedException();
   }
 }
-*/

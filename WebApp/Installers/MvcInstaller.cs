@@ -18,7 +18,7 @@ namespace WebApplicationAPI.Installers {
       configuration.Bind(nameof(jwtSettings), jwtSettings);
       services.AddSingleton(jwtSettings);
 
-      // services.AddScoped<IIdentityService, IdentityService>();
+      services.AddScoped<IIdentityService, IdentityService>();
 
       services.AddMvc();
 
