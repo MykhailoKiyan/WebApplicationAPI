@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplicationAPI.Domain;
 
 namespace WebApplicationAPI.Data {
-  public class DataContext : IdentityDbContext {
-    public DataContext(DbContextOptions<DataContext> options)
-        : base(options) {
-    }
+  public class DataContext : DbContext /*IdentityDbContext*/ {
+    public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
     //public DbSet<Post> Posts { get; set; }
 
