@@ -20,7 +20,13 @@ namespace WebApplicationAPI.Installers {
               .AddEntityFrameworkStores<DataContext>();
 
             services.AddScoped<IPostService, PostService>();
-            services.AddSingleton<IPostService, CosmosPostService>();
+            //services.AddSingleton<IPostService, CosmosPostService>();
+
+            services
+                .AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
         }
     }
 }
