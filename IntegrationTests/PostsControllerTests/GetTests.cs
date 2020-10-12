@@ -1,32 +1,38 @@
-using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using WebApplicationAPI.Contracts.V1;
-using WebApplicationAPI.Contracts.V1.Requests;
-// using WebApplicationAPI.IntegrationTests.ExtensionMethods;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
+using WebApplicationAPI.Contracts.V1;
+using WebApplicationAPI.Contracts.V1.Requests;
+using WebApplicationAPI.IntegrationTests.Extensions;
+using WebApplicationAPI.Contracts.V1.Responses;
+using WebApplicationAPI.Domain;
+
 namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
-  public class GetTests : BaseTest {
-    [Fact]
-    public async Task Get_ReturnPost_WhenPostExists()
-    {
-      // Arrenge
-      await this.AuthenticateAsync();
-      var createdPost = await this.CreatePostAsync(new PostCreateRequest { Name = "TestPost" });
+    public class GetTests : BaseTest {
+        public GetTests(WebApplicationFactory<Startup> factory) : base(factory) { }
 
-      // Act
-      var response = await this.Client.GetAsync(ApiRoutes.Posts.Get.Replace("{postId}", createdPost.Id.ToString()));
+        [Fact]
+        public async Task Get_ReturnPost_WhenPostExists() {
+            // Arrenge
+            var postName = "TestPost";
+            var client = ArrangeHttpClient();
+            await client.AuthenticateAsync();
+            var createdPost = await this.CreatePostAsync(client, new PostCreateRequest { Name = postName });
 
-      // Assert
-      response.StatusCode.Should().Be(HttpStatusCode.OK);
-      var returnedPost = await response.Content.ReadAsAsync<Domain.Post>();
-      returnedPost.Id.Should().Be(createdPost.Id);
-      returnedPost.Name.Should().Be("TestPost");
+            // Act
+            var (response, result) = await client.ExecuteRequest<Post>(HttpMethod.Get, ApiRoutes.Posts.Get.Replace("{postId}", createdPost.Id.ToString()));
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Id.Should().Be(createdPost.Id);
+            result.Name.Should().Be(postName);
+        }
     }
-  }
 }

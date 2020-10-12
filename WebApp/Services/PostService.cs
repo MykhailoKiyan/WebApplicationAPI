@@ -65,6 +65,7 @@ namespace WebApplicationAPI.Services {
         }
 
         private async Task AddNewTagsAsync(Post post) {
+            if (post.Tags == null) return;
             foreach (var tag in post.Tags) {
                 var existingTag = await this.dataContext.Tags.SingleOrDefaultAsync(x => x.Name == tag.TagName);
 

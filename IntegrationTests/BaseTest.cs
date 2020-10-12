@@ -1,61 +1,92 @@
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.TestHost;
+using Xunit;
+
 using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Data;
-using Xunit;
 using WebApplicationAPI.Contracts.V1.Responses;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Storage;
+using WebApplicationAPI.IntegrationTests.Data;
+using WebApplicationAPI.IntegrationTests.Extensions;
 
 namespace WebApplicationAPI.IntegrationTests {
-  [Trait("Category", "Integration")]
-  public abstract class BaseTest {
-    private readonly HttpClient client;
-    protected HttpClient Client => this.client;
+    [Trait("Category", "Integration")]
+    public abstract class BaseTest : IClassFixture<WebApplicationFactory<Startup>> {
 
-    public BaseTest() : this(new InMemoryDatabaseRoot()) { }
+        protected readonly WebApplicationFactory<Startup> appFactory;
+        private HttpClient client;
+        protected IServiceCollection services;
+        private readonly InMemoryDatabaseRoot databaseRoot = new InMemoryDatabaseRoot();
 
-    public BaseTest(InMemoryDatabaseRoot databaseRoot) {
-      var app = new WebApplicationFactory<Startup>()
-        .WithWebHostBuilder(builder => {
-          builder.ConfigureServices(services => {
+        public BaseTest(WebApplicationFactory<Startup> factory) {
+            this.appFactory = factory.WithWebHostBuilder(c => {
+                c.ConfigureTestServices(SetupMockServices);
+            });
+            this.client = this.appFactory.CreateClient();
+        }
+
+        public HttpClient ArrangeHttpClient() {
+            return this.appFactory.CreateClient();
+        }
+
+        protected virtual void SetupMockServices(IServiceCollection services) {
+            this.services = services;
+            SetupDatabase(services);
+        }
+
+        private void SetupDatabase(IServiceCollection services) {
             // Remove the app's Db Context registration.
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<DataContext>));
-            if (descriptor != null) services.Remove(descriptor);
+            var descriptor = services.SingleOrDefault(
+                d => d.ServiceType ==
+                    typeof(DbContextOptions<DataContext>));
+
+            if (descriptor != null) {
+                services.Remove(descriptor);
+            }
 
             // Add Db Context using an in-memory database for testing.
             services.AddDbContext<DataContext>(options => {
-              options.UseInMemoryDatabase("InMemoryDbForTesting", databaseRoot);
+                options.UseInMemoryDatabase("InMemoryDbForTesting", databaseRoot);
             });
-          });
-        });
-      this.client = app.CreateClient();
-    }
 
-    protected async Task AuthenticateAsync() {
-      this.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await this.GetJwtAsync());
-    }
+            using var scope = services.BuildServiceProvider().CreateScope();
+            var scopedServices = scope.ServiceProvider;
+            var db = scopedServices.GetRequiredService<DataContext>();
+            new TestDataSeeder(db).Seed();
+        }
 
-    protected async Task<PostResponse> CreatePostAsync(PostCreateRequest post) {
-      var response = await this.Client.PostAsJsonAsync(ApiRoutes.Posts.Create, post);
-      return await response.Content.ReadAsAsync<PostResponse>();
-    }
+        /*
+        protected async Task AuthenticateAsync() {
+            var authorization = new AuthenticationHeaderValue("bearer", await this.GetJwtAsync());
+            this.Client.DefaultRequestHeaders.Authorization = authorization;
+        }
+        */
 
-    private async Task<string> GetJwtAsync() {
-      var response = await this.client.PostAsJsonAsync(ApiRoutes.Identity.Register, new UserRegistrationRequest {
-        Email = "test@gmail.com",
-        Password = "SomePa$$word1234"
-      });
-      var registration = await response.Content.ReadAsAsync<AuthSuccessResponse>();
-      return registration.Token;
+        protected async Task<PostResponse> CreatePostAsync(HttpClient client, PostCreateRequest post) {
+            var (response, _) = await client.ExecuteRequest<PostCreateRequest>(HttpMethod.Post, ApiRoutes.Posts.Create, post);
+            return await response.Content.ReadAsAsync<PostResponse>();
+
+        }
+
+        /*
+        private async Task<string> GetJwtAsync() {
+            var response = await this.Client.PostAsJsonAsync(ApiRoutes.Identity.Register, new UserRegistrationRequest {
+                Email = "test@gmail.com",
+                Password = "SomePa$$word1234"
+            });
+            var registration = await response.Content.ReadAsAsync<AuthSuccessResponse>();
+            return registration.Token;
+        }
+        */
     }
-  }
 }
