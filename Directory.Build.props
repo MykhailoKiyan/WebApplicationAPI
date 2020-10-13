@@ -1,0 +1,24 @@
+<Project>
+
+  <!-- .editorconfig configuration -->
+  <ItemGroup>
+    <AdditionalFiles Include="$(SolutionDir).editorconfig" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="AsyncFixer" Version="1.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- StyleCop configuration -->
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>../../StyleCop.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+</Project>
