@@ -39,7 +39,7 @@ namespace WebApplicationAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("RoleClaims","Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -62,7 +62,7 @@ namespace WebApplicationAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("UserClaims","Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -83,7 +83,7 @@ namespace WebApplicationAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("UserLogins","Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -102,7 +102,7 @@ namespace WebApplicationAPI.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("UserTokens","Identity");
                 });
 
             modelBuilder.Entity("WebApplicationAPI.Domain.Identity.Role", b =>
@@ -130,7 +130,7 @@ namespace WebApplicationAPI.Migrations
                         .HasName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("Roles","Identity");
                 });
 
             modelBuilder.Entity("WebApplicationAPI.Domain.Identity.User", b =>
@@ -154,7 +154,9 @@ namespace WebApplicationAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(16)")
+                        .HasMaxLength(16);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -199,7 +201,7 @@ namespace WebApplicationAPI.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("Users","Identity");
                 });
 
             modelBuilder.Entity("WebApplicationAPI.Domain.Identity.UserRole", b =>
@@ -214,7 +216,7 @@ namespace WebApplicationAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("UserRoles","Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

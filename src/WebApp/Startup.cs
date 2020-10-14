@@ -20,21 +20,18 @@ using WebApplicationAPI.Domain.Identity;
 namespace WebApplicationAPI {
     public partial class Startup {
         public Startup(IConfiguration configuration) {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureDevelopmentServices(IServiceCollection services) {
+        public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<DataContext>(x => {
-                x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                ;
+                x.UseSqlServer(
+                    this.Configuration.GetConnectionString("DefaultConnection"),
+                    options => options.MigrationsHistoryTable("MigrationsHistory", "EF"));
             });
 
-            ConfigureServices(services);
-        }
-
-        public void ConfigureServices(IServiceCollection services) {
             IdentityBuilder builder = services.AddIdentityCore<User>(opt => {
                 opt.Password.RequireDigit = false;
                 opt.Password.RequiredLength = 4;
