@@ -214,3 +214,6 @@ dotnet_diagnostic.SA1009.severity = silent
 
 # SA1505: Opening braces should not be followed by blank line
 dotnet_diagnostic.SA1505.severity = silent
+
+# SA1400: Access modifier should be declared
+dotnet_diagnostic.SA1400.severity = silent
