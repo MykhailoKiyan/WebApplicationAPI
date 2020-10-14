@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 using WebApplicationAPI.Domain;
 
 namespace WebApplicationAPI.Data {
-    public class DataContext : IdentityDbContext {
+    public class DataContext : DbContext /*IdentityDbContext*/ {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Post> Posts { get; set; }
@@ -16,7 +17,16 @@ namespace WebApplicationAPI.Data {
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
-            builder.Entity<PostTag>().Ignore(xx => xx.Post).HasKey(x => new { x.PostId, x.TagName });
+            builder.Ignore<Post>();
+            builder.Ignore<Tag>();
+            builder.Ignore<PostTag>();
+            builder.Ignore<RefreshToken>();
+            IdentityConfigure(builder);
+            //builder.Entity<PostTag>().Ignore(xx => xx.Post).HasKey(x => new { x.PostId, x.TagName });
+        }
+
+        void IdentityConfigure(ModelBuilder builder) {
+            builder.Ignore<IdentityUser>();
         }
     }
 }
