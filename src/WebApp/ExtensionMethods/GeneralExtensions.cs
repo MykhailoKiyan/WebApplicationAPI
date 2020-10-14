@@ -1,6 +1,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-
+/*
 namespace WebApplicationAPI.ExtensionMethods {
     public static class GeneralExtensions {
         public static string GetUserId(this HttpContext httpContext) {
@@ -12,3 +12,4 @@ namespace WebApplicationAPI.ExtensionMethods {
         }
     }
 }
+*/

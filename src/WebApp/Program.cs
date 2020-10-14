@@ -1,27 +1,39 @@
+using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 using WebApplicationAPI.Data;
+using WebApplicationAPI.Domain.Identity;
 
 namespace WebApplicationAPI {
     public class Program {
         public static async Task Main(string[] args) {
-            IHost host = CreateHostBuilder(args).Build();
-            using (IServiceScope scope = host.Services.CreateScope()) {
-                DataContext dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-                await dbContext.Database.MigrateAsync();
+
+            var host = CreateWebHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope()) {
+                var services = scope.ServiceProvider;
+                try {
+                    var context = services.GetRequiredService<DataContext>();
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
+                    context.Database.Migrate();
+                } catch (Exception ex) {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occured during migration");
+                }
             }
 
-            await host.RunAsync();
+            host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) => Host
-            .CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder => {
-                webBuilder.UseStartup<Startup>();
-            });
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }

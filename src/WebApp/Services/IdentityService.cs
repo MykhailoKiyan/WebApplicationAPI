@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using WebApplicationAPI.Data;
 using WebApplicationAPI.Domain;
 using WebApplicationAPI.Options;
-
+/*
 namespace WebApplicationAPI.Services {
     public class IdentityService : IIdentityService {
         private readonly UserManager<IdentityUser> _userManager;
@@ -177,3 +177,4 @@ namespace WebApplicationAPI.Services {
         }
     }
 }
+*/

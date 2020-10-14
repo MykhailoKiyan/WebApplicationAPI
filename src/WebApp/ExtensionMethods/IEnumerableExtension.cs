@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+/*
 namespace WebApplicationAPI.ExtensionMethods {
     public static class EnumerableVoid {
         public static void ForEach<T>(this IEnumerable<T> target, Action<T> action) {
@@ -14,3 +14,4 @@ namespace WebApplicationAPI.ExtensionMethods {
         }
     }
 }
+*/

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 
 using WebApplicationAPI.Domain;
-
+/*
 namespace WebApplicationAPI.Services {
     public interface IIdentityService {
         Task<AuthenticationResult> RegisterAsync(string email, string password);
@@ -11,3 +11,4 @@ namespace WebApplicationAPI.Services {
         Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken);
     }
 }
+*/

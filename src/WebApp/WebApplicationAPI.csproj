@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Nullable>enable</Nullable>
+    <!-- <Nullable>enable</Nullable> -->
     <UserSecretsId>60987B9D-E748-43A5-94B0-52E7EA90498B</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>

@@ -1,6 +1,6 @@
+﻿/*
 using System.Collections.Generic;
 using System.Text;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,10 +10,12 @@ using Microsoft.OpenApi.Models;
 using WebApplicationAPI.Options;
 using WebApplicationAPI.Services;
 
-namespace WebApplicationAPI.Installers {
-    public class MvcInstaller : IInstaller {
-        public void InstallServices(IServiceCollection services, IConfiguration configuration) {
+namespace WebApplicationAPI {
+    public partial class Startup {
+        partial void MvcConfigureServices(IServiceCollection services, IConfiguration configuration) {
+            
             var jwtSettings = new JwtSettings();
+
             configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
@@ -65,6 +67,8 @@ namespace WebApplicationAPI.Installers {
                     }}, new List<string>()}
                 });
             });
+            
         }
     }
 }
+*/

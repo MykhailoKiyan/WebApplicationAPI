@@ -1,4 +1,5 @@
 namespace WebApplicationAPI.Options {
+    /*
     public class SwaggerOptions {
         public string JsonRoute { get; set; }
 
@@ -6,4 +7,5 @@ namespace WebApplicationAPI.Options {
 
         public string UiEndpoint { get; set; }
     }
+    */
 }

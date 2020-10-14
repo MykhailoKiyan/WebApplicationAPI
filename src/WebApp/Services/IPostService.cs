@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using WebApplicationAPI.Domain;
-
+/*
 namespace WebApplicationAPI.Services {
     public interface IPostService {
         Task<List<Post>> GetPostsAsync();
@@ -21,3 +21,4 @@ namespace WebApplicationAPI.Services {
         Task<List<Tag>> GetAllTagsAsync();
     }
 }
+*/
