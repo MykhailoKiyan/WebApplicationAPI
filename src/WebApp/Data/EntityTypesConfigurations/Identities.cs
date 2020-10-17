@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WebApplicationAPI.Domain.Identity;
 
 namespace WebApplicationAPI.Data.EntityTypesConfigurations {
-    class IdentityEntitiesConfiguration : IEntityTypeConfiguration<User>, IEntityTypeConfiguration<Role>,
+    class Identities : IEntityTypeConfiguration<User>, IEntityTypeConfiguration<Role>,
             IEntityTypeConfiguration<IdentityUserClaim<Guid>>, IEntityTypeConfiguration<UserRole>,
             IEntityTypeConfiguration<IdentityUserLogin<Guid>>, IEntityTypeConfiguration<IdentityRoleClaim<Guid>>,
             IEntityTypeConfiguration<IdentityUserToken<Guid>> {

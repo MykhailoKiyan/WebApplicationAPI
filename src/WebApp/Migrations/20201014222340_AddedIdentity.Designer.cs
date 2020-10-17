@@ -10,8 +10,8 @@ using WebApplicationAPI.Data;
 namespace WebApplicationAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201014222340_Identity")]
-    partial class Identity
+    [Migration("20201014222340_AddedIdentity")]
+    partial class AddedIdentity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

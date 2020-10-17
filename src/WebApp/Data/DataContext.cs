@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 using WebApplicationAPI.Data.EntityTypesConfigurations;
+using WebApplicationAPI.Domain;
 using WebApplicationAPI.Domain.Identity;
 
 namespace WebApplicationAPI.Data {
@@ -12,14 +13,16 @@ namespace WebApplicationAPI.Data {
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
+        public DbSet<Domain.RefreshToken> RefreshTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
             this.IdentityConfigure(builder);
+            builder.ApplyConfiguration<Domain.RefreshToken>((IEntityTypeConfiguration<Domain.RefreshToken>)new EntityTypesConfigurations.RefreshToken());
         }
 
         void IdentityConfigure(ModelBuilder builder) {
-            builder.Ignore<IdentityUser>();
-            var configuration = new IdentityEntitiesConfiguration();
+            var configuration = new Identities();
             builder.ApplyConfiguration<User>(configuration);
             builder.ApplyConfiguration<Role>(configuration);
             builder.ApplyConfiguration<IdentityUserClaim<Guid>>(configuration);

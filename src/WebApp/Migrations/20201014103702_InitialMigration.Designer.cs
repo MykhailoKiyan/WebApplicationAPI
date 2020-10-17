@@ -9,8 +9,8 @@ using WebApplicationAPI.Data;
 
 namespace WebApplicationAPI.Migrations {
     [DbContext(typeof(DataContext))]
-    [Migration("20201014103702_Initialization")]
-    partial class Initialization {
+    [Migration("20201014103702_InitialMigration")]
+    partial class InitialMigration {
         protected override void BuildTargetModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
             modelBuilder
