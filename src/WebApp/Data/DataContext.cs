@@ -13,13 +13,17 @@ namespace WebApplicationAPI.Data {
 
         public DbSet<Domain.Post> Posts { get; set; }
 
+        public DbSet<Domain.Tag> Tags { get; set; }
+
+        public DbSet<Domain.PostTag> PostTags { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
             this.IdentityConfigure(builder);
             builder.ApplyConfiguration(new EntityTypesConfigurations.RefreshToken());
             builder.ApplyConfiguration(new EntityTypesConfigurations.Post());
-            builder.Ignore<Domain.PostTag>();
-            builder.Ignore<Domain.Tag>();
+            builder.ApplyConfiguration(new EntityTypesConfigurations.Tag());
+            builder.ApplyConfiguration(new EntityTypesConfigurations.PostTag());
         }
 
         void IdentityConfigure(ModelBuilder builder) {
