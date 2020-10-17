@@ -1,20 +1,19 @@
-﻿/*
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using WebApplicationAPI.Data;
 using WebApplicationAPI.Domain.Identity;
-using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI {
     public partial class Startup {
-        partial void DataConfigureServices(IServiceCollection services, IConfiguration configuration) {
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"),
-                optionsBuilder => optionsBuilder.MigrationsHistoryTable("MigrationsHistory", "EF")));
-            //services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<DataContext>();
+        partial void DataConfigureServices(IServiceCollection services) {
+            services.AddDbContext<DataContext>(options => {
+                options.UseSqlServer(
+                    this.Configuration.GetConnectionString("DefaultConnection"),
+                    options => options.MigrationsHistoryTable("MigrationsHistory", "EF"));
+            });
 
             IdentityBuilder builder = services.AddIdentityCore<User>(opt => {
                 opt.Password.RequireDigit = false;
@@ -28,9 +27,6 @@ namespace WebApplicationAPI {
             builder.AddRoleValidator<RoleValidator<Role>>();
             builder.AddRoleManager<RoleManager<Role>>();
             builder.AddSignInManager<SignInManager<User>>();
-
-            services.AddScoped<IPostService, PostService>();
         }
     }
 }
-*/

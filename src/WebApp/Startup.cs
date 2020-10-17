@@ -26,24 +26,7 @@ namespace WebApplicationAPI {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddDbContext<DataContext>(x => {
-                x.UseSqlServer(
-                    this.Configuration.GetConnectionString("DefaultConnection"),
-                    options => options.MigrationsHistoryTable("MigrationsHistory", "EF"));
-            });
-
-            IdentityBuilder builder = services.AddIdentityCore<User>(opt => {
-                opt.Password.RequireDigit = false;
-                opt.Password.RequiredLength = 4;
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireUppercase = false;
-            });
-
-            builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
-            builder.AddEntityFrameworkStores<DataContext>();
-            builder.AddRoleValidator<RoleValidator<Role>>();
-            builder.AddRoleManager<RoleManager<Role>>();
-            builder.AddSignInManager<SignInManager<User>>();
+            this.DataConfigureServices(services);
 
             /*
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -88,6 +71,7 @@ namespace WebApplicationAPI {
             app.UseAuthentication();
             app.UseDefaultFiles();
         }
-    }
 
+        partial void DataConfigureServices(IServiceCollection services);
+    }
 }
