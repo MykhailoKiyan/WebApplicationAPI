@@ -1,7 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Identity;
+
+using WebApplicationAPI.Domain.Identity;
 
 namespace WebApplicationAPI.Domain {
     public class Tag {
@@ -11,7 +12,7 @@ namespace WebApplicationAPI.Domain {
         public string? CreatorId { get; set; }
 
         [ForeignKey(nameof(CreatorId))]
-        public IdentityUser? CreatedBy { get; set; }
+        public User? CreatedBy { get; set; }
 
         public DateTime? CreatedOn { get; set; }
     }
