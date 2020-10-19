@@ -16,7 +16,8 @@ namespace WebApplicationAPI.Data.EntityTypesConfigurations {
         void IEntityTypeConfiguration<User>.Configure(EntityTypeBuilder<User> builder) {
             builder.ToTable("Users", SCHEMA_NAME);
             builder.Property(user => user.Gender)
-                   .HasMaxLength(16);
+                   .HasMaxLength(16)
+                   .HasDefaultValue(string.Empty);
         }
 
         void IEntityTypeConfiguration<Role>.Configure(EntityTypeBuilder<Role> builder) {

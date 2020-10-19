@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-/*
+
 namespace WebApplicationAPI.Domain {
     public class AuthenticationResult {
         public string Token { get; set; }
@@ -11,4 +11,3 @@ namespace WebApplicationAPI.Domain {
         public IEnumerable<string> Errors { get; set; }
     }
 }
-*/

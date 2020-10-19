@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 
 using System.Text;
 
+using WebApplicationAPI.Services;
+
 using SwaggerOptions = WebApplicationAPI.Options.SwaggerOptions;
 
 namespace WebApplicationAPI {
@@ -23,6 +25,7 @@ namespace WebApplicationAPI {
             this.DataConfigureServices(services);
             this.AuthConfigureServices(services);
             this.MvcConfigureServices(services);
+            services.AddTransient<IPostService, PostService>();
 
             /*
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -8,6 +8,6 @@ namespace WebApplicationAPI.Domain.Identity {
     /// </summary>
     public class User : IdentityUser<Guid> {
         public string Gender { get; set; }
-        public IEnumerable<UserRole> UserRoles { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }

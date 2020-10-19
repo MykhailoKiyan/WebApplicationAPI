@@ -7,6 +7,6 @@ namespace WebApplicationAPI.Domain.Identity {
     /// Represents a role of the Application.
     /// </summary>
     public class Role : IdentityRole<Guid> {
-        public IEnumerable<UserRole> UserRoles { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }

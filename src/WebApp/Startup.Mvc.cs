@@ -1,13 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-using WebApplicationAPI.Options;
-// using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI {
     public partial class Startup {
@@ -45,6 +38,9 @@ namespace WebApplicationAPI {
                     }
                 });
             });
+
+            services.AddControllers()
+                    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
     }
 }

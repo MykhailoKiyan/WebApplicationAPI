@@ -1,4 +1,3 @@
-/*
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,80 +15,61 @@ using WebApplicationAPI.Services;
 namespace WebApplicationAPI.Controllers.V1 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PostsController : Controller {
-        private readonly IPostService _postService;
+        private readonly IPostService postService;
 
         public PostsController(IPostService postService) {
-            _postService = postService;
+            this.postService = postService;
         }
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
         public async Task<IActionResult> GetAll() {
-            return Ok(await _postService.GetPostsAsync());
+            return this.Ok(await postService.GetPostsAsync());
         }
 
         [HttpPut(ApiRoutes.Posts.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid postId, [FromBody] PostUpdateRequest request) {
-            var userOwnsPost = await _postService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
-
-            if (!userOwnsPost) {
-                return BadRequest(new { error = "You do not own this post" });
-            }
-
-            var post = await _postService.GetPostByIdAsync(postId);
+            var userId = this.HttpContext.GetUserId();
+            if (!userId.HasValue) return this.BadRequest("The User Id is epsent");
+            var userOwnsPost = await postService.UserOwnsPostAsync(postId, userId.Value);
+            if (!userOwnsPost) return this.BadRequest(new { error = "You do not own this post" });
+            var post = await postService.GetPostByIdAsync(postId);
             post.Name = request.Name;
-
-            var updated = await _postService.UpdatePostAsync(post);
-
-            if (updated)
-                return Ok(post);
-
-            return NotFound();
+            var updated = await postService.UpdatePostAsync(post);
+            if (updated) return this.Ok(post);
+            return this.NotFound();
         }
 
         [HttpDelete(ApiRoutes.Posts.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid postId) {
-            var userOwnsPost = await _postService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
-
-            if (!userOwnsPost) {
-                return BadRequest(new { error = "You do not own this post" });
-            }
-
-            var deleted = await _postService.DeletePostAsync(postId);
-
-            if (deleted)
-                return NoContent();
-
-            return NotFound();
+            var userId = this.HttpContext.GetUserId();
+            if (!userId.HasValue) return this.BadRequest("The User Id is epsent");
+            var userOwnsPost = await postService.UserOwnsPostAsync(postId, userId.Value);
+            if (!userOwnsPost) return this.BadRequest(new { error = "You do not own this post" });
+            var deleted = await postService.DeletePostAsync(postId);
+            if (deleted) return this.NoContent();
+            return this.NotFound();
         }
 
         [HttpGet(ApiRoutes.Posts.Get)]
         public async Task<IActionResult> Get([FromRoute] Guid postId) {
-            var post = await _postService.GetPostByIdAsync(postId);
-
-            if (post == null)
-                return NotFound();
-
-            return Ok(post);
+            var post = await postService.GetPostByIdAsync(postId);
+            if (post == null) return this.NotFound();
+            return this.Ok(post);
         }
 
         [HttpPost(ApiRoutes.Posts.Create)]
         public async Task<IActionResult> Create([FromBody] PostCreateRequest postRequest) {
+            var userId = this.HttpContext.GetUserId();
+            if (!userId.HasValue) return this.BadRequest("The User Id is epsent");
             var newPostId = Guid.NewGuid();
-            var post = new Post {
-                Id = newPostId,
-                Name = postRequest.Name,
-                UserId = HttpContext.GetUserId(),
-                Tags = postRequest.Tags.Select(x => new PostTag { PostId = newPostId, TagName = x }).ToList()
+            var post = new Post { Id = newPostId, Name = postRequest.Name, UserId = userId.Value,
+                Tags = postRequest.Tags.Select(t => new PostTag { PostId = newPostId, TagName = t }).ToList()
             };
-
-            await _postService.CreatePostAsync(post);
-
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
+            await postService.CreatePostAsync(post);
+            var baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
-
             var response = new PostResponse { Id = post.Id };
-            return Created(locationUri, response);
+            return this.Created(locationUri, response);
         }
     }
 }
-*/

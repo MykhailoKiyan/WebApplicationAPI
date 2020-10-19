@@ -16,6 +16,6 @@ namespace WebApplicationAPI.Domain {
 
         public User? User { get; set; }
 
-        public virtual IEnumerable<PostTag> Tags { get; set; }
+        public virtual ICollection<PostTag> Tags { get; set; }
     }
 }
