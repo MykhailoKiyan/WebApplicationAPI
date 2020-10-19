@@ -39,6 +39,10 @@ namespace WebApplicationAPI {
                 });
             });
 
+            services.AddAuthorization(options => {
+                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
+            });
+
             services.AddControllers()
                     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }

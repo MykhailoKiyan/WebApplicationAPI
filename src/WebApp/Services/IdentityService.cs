@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -41,10 +42,11 @@ namespace WebApplicationAPI.Services {
 
             var existingUser = await userManager.FindByEmailAsync(email);
             if (existingUser != null) return new AuthenticationResult { Errors = new[] { "User with this email address already exists" } };
-            var newUser = new User { Email = email, UserName = email };
+            var newUser = new User { Id = Guid.NewGuid(), Email = email, UserName = email };
             var createdUser = await userManager.CreateAsync(newUser, password);
             if (!createdUser.Succeeded) return new AuthenticationResult { Errors = createdUser.Errors.Select(x => x.Description) };
-            return await GenerateAuthenticationResultForUserAsync(newUser);
+            await this.userManager.AddClaimAsync(newUser, new Claim("tags.view", "true"));
+            return await this.GenerateAuthenticationResultForUserAsync(newUser);
         }
 
         public async Task<AuthenticationResult> LoginAsync(
@@ -55,7 +57,7 @@ namespace WebApplicationAPI.Services {
             if (user == null) return new AuthenticationResult { Errors = new[] { "User does not exist" } };
             var userHasValidPassword = await userManager.CheckPasswordAsync(user, password);
             if (!userHasValidPassword) return new AuthenticationResult { Errors = new[] { "User/password combination is wrong" } };
-            return await GenerateAuthenticationResultForUserAsync(user);
+            return await this.GenerateAuthenticationResultForUserAsync(user);
         }
 
         public async Task<AuthenticationResult> RefreshTokenAsync(
@@ -101,13 +103,16 @@ namespace WebApplicationAPI.Services {
         private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(User user) {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor {
-                Subject = new ClaimsIdentity(new[] {
+            var claims = new List<Claim> {
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
                     new Claim("id", user.Id.ToString())
-                }),
+            };
+            var userClaims = await this.userManager.GetClaimsAsync(user);
+            claims.AddRange(userClaims);
+            var tokenDescriptor = new SecurityTokenDescriptor {
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(jwtSettings.TokenLifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
