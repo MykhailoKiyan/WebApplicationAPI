@@ -1,5 +1,3 @@
-using System.Buffers.Text;
-
 namespace WebApplicationAPI.Contracts.V1 {
     public static class ApiRoutes {
         public const string Root = "api";
@@ -22,6 +20,12 @@ namespace WebApplicationAPI.Contracts.V1 {
 
         public static class Tags {
             public const string GetAll = Base + "/tags";
+
+            public const string Get = Base + "/tags/{tagName}";
+
+            public const string Create = Base + "/tags";
+
+            public const string Delete = Base + "/tags/{tagName}";
         }
 
         public static class Identity {

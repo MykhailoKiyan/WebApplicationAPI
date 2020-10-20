@@ -24,16 +24,20 @@ namespace WebApplicationAPI.Services {
 
         private readonly DataContext dbContext;
 
+        private readonly RoleManager<Role> roleManager;
+
         public IdentityService(
                 UserManager<User> userManager,
                 JwtSettings jwtSettings,
                 TokenValidationParameters tokenValidationParameters,
-                DataContext context) {
+                DataContext context,
+                RoleManager<Role> roleManager) {
 
             this.userManager = userManager;
             this.jwtSettings = jwtSettings;
             this.tokenValidationParameters = tokenValidationParameters;
-            dbContext = context;
+            this.dbContext = context;
+            this.roleManager = roleManager;
         }
 
         public async Task<AuthenticationResult> RegisterAsync(
@@ -45,7 +49,6 @@ namespace WebApplicationAPI.Services {
             var newUser = new User { Id = Guid.NewGuid(), Email = email, UserName = email };
             var createdUser = await userManager.CreateAsync(newUser, password);
             if (!createdUser.Succeeded) return new AuthenticationResult { Errors = createdUser.Errors.Select(x => x.Description) };
-            await this.userManager.AddClaimAsync(newUser, new Claim("tags.view", "true"));
             return await this.GenerateAuthenticationResultForUserAsync(newUser);
         }
 
@@ -111,6 +114,18 @@ namespace WebApplicationAPI.Services {
             };
             var userClaims = await this.userManager.GetClaimsAsync(user);
             claims.AddRange(userClaims);
+            var userRoles = await this.userManager.GetRolesAsync(user);
+            foreach (var userRole in userRoles) {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await this.roleManager.FindByNameAsync(userRole);
+                if (role == null) continue;
+                var roleClaims = await this.roleManager.GetClaimsAsync(role);
+                foreach (var roleClaim in roleClaims) {
+                    if (claims.Contains(roleClaim)) continue;
+                    claims.Add(roleClaim);
+                }
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(jwtSettings.TokenLifetime),

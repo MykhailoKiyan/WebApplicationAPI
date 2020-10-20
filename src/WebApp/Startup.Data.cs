@@ -15,6 +15,11 @@ namespace WebApplicationAPI {
                     options => options.MigrationsHistoryTable("MigrationsHistory", "EF"));
             });
 
+            services
+                .AddDefaultIdentity<User>()
+                .AddRoles<Role>()
+                .AddEntityFrameworkStores<DataContext>();
+
             IdentityBuilder builder = services.AddIdentityCore<User>(opt => {
                 opt.Password.RequireDigit = false;
                 opt.Password.RequiredLength = 4;

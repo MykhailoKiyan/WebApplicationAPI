@@ -23,6 +23,15 @@ namespace WebApplicationAPI {
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     await context.Database.MigrateAsync();
+                    if (!await roleManager.RoleExistsAsync("Admin")) {
+                        var adminRole = new Role { Name = "Admin" };
+                        await roleManager.CreateAsync(adminRole);
+                    }
+
+                    if (!await roleManager.RoleExistsAsync("Poster")) {
+                        var posterRole = new Role { Name = "Poster" };
+                        await roleManager.CreateAsync(posterRole);
+                    }
                 } catch (Exception ex) {
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occured during migration");

@@ -7,17 +7,13 @@ namespace WebApplicationAPI {
         partial void MvcConfigureServices(IServiceCollection services) {
             services.AddMvc(options => { options.EnableEndpointRouting = false; });
 
+            services.AddAuthorization();
+
             services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1", new OpenApiInfo {
                     Title = "Tweetbook API",
                     Version = "v1"
                 });
-
-                var security = new Dictionary<string, IEnumerable<string>> {
-                    {
-                        "Bearer", new string[0]
-                    }
-                };
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
                     Description = "JWT Authorization header using the bearer scheme",
@@ -37,10 +33,6 @@ namespace WebApplicationAPI {
                         new List<string>()
                     }
                 });
-            });
-
-            services.AddAuthorization(options => {
-                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
             });
 
             services.AddControllers()
