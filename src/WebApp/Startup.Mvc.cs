@@ -1,13 +1,23 @@
 ﻿using System.Collections.Generic;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+
+using WebApplicationAPI.Authorization;
 
 namespace WebApplicationAPI {
     public partial class Startup {
         partial void MvcConfigureServices(IServiceCollection services) {
             services.AddMvc(options => { options.EnableEndpointRouting = false; });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options => {
+                options.AddPolicy("MustWorkForCompany", policy => {
+                    policy.AddRequirements(new WorksForCompanyRequirement("google.com"));
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
 
             services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1", new OpenApiInfo {

@@ -10,7 +10,7 @@ using WebApplicationAPI.ExtensionMethods;
 using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI.Controllers.V1 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Poster")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TagsController : Controller {
         private readonly IPostService postService;
 
@@ -46,7 +46,7 @@ namespace WebApplicationAPI.Controllers.V1 {
         }
 
         [HttpDelete(ApiRoutes.Tags.Delete)]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "MustWorkForCompany")]
         public async Task<IActionResult> Delete([FromRoute] string tagName) {
             var isDeleted = await this.postService.DeleteTagAsync(tagName);
             if (isDeleted) return this.NoContent();
