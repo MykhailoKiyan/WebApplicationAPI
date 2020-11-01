@@ -28,7 +28,8 @@ namespace WebApplicationAPI.Services {
         }
 
         public async Task<bool> CreatePostAsync(Post post) {
-            post.Tags?.ForEach(x => x.TagName = x.TagName.ToLower());
+            if (post.Tags == null) post.Tags = Enumerable.Empty<PostTag>().ToList();
+            post.Tags.ForEach(x => x.TagName = x.TagName.ToLower());
             await this.AddNewTags(post);
             await dataContext.Posts.AddAsync(post);
             var created = await dataContext.SaveChangesAsync();

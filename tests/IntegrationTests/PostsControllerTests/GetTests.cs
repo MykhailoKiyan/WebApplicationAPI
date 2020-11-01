@@ -22,7 +22,7 @@ namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
         public async Task Get_ReturnPost_WhenPostExists() {
             // Arrenge
             var postName = "TestPost";
-            var client = ArrangeHttpClient();
+            var client = this.ArrangeHttpClient();
             await client.AuthenticateAsync();
             var createdPost = await this.CreatePostAsync(client, new PostCreateRequest { Name = postName });
 

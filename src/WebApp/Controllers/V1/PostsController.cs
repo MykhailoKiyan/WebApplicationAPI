@@ -62,8 +62,14 @@ namespace WebApplicationAPI.Controllers.V1 {
             var userId = this.HttpContext.GetUserId();
             if (!userId.HasValue) return this.BadRequest("The User Id is epsent");
             var newPostId = Guid.NewGuid();
-            var post = new Post { Id = newPostId, Name = postRequest.Name, UserId = userId.Value,
-                Tags = postRequest.Tags.Select(t => new PostTag { PostId = newPostId, TagName = t }).ToList()
+            var post = new Post {
+                Id = newPostId,
+                Name = postRequest.Name,
+                UserId = userId.Value,
+                Tags = postRequest.Tags?.Select(t => new PostTag {
+                    PostId = newPostId,
+                    TagName = t
+                }).ToList()
             };
             await postService.CreatePostAsync(post);
             var baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
