@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Contracts.V1.Requests;
+using WebApplicationAPI.Contracts.V1.Responses;
 using WebApplicationAPI.ExtensionMethods;
 using WebApplicationAPI.Services;
 
@@ -13,22 +16,25 @@ namespace WebApplicationAPI.Controllers.V1 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TagsController : Controller {
         private readonly IPostService postService;
+        private readonly IMapper mapper;
 
-        public TagsController(IPostService postService) {
+        public TagsController(IPostService postService, IMapper mapper) {
             this.postService = postService;
+            this.mapper = mapper;
         }
 
         [HttpGet(ApiRoutes.Tags.GetAll)]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll() {
-            return this.Ok(await postService.GetAllTagsAsync());
+            var tags = await postService.GetAllTagsAsync();
+            return this.Ok(this.mapper.Map<List<TagResponse>>(tags));
         }
 
         [HttpGet(ApiRoutes.Tags.Get)]
         public async Task<IActionResult> Get([FromRoute] string tagName) {
             var tag = await this.postService.GetTagByNameAsync(tagName);
             if (tag == null) return this.NotFound();
-            else return this.Ok(tag);
+            else return this.Ok(this.mapper.Map<TagResponse>(tag));
         }
 
         public async Task<IActionResult> Create([FromBody] TagCreateRequest request) {
@@ -42,7 +48,7 @@ namespace WebApplicationAPI.Controllers.V1 {
             if (!isCreated) return this.BadRequest(new { error = "Unable to create tag." });
             var baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Tags.Get.Replace("{tagName}", tag.Name);
-            return this.Created(locationUri, tag);
+            return this.Created(locationUri, this.mapper.Map<TagResponse>(tag));
         }
 
         [HttpDelete(ApiRoutes.Tags.Delete)]

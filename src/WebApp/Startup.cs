@@ -7,12 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-
-using System.Text;
+using SwaggerOptions = WebApplicationAPI.Options.SwaggerOptions;
+using AutoMapper;
 
 using WebApplicationAPI.Services;
-
-using SwaggerOptions = WebApplicationAPI.Options.SwaggerOptions;
 
 namespace WebApplicationAPI {
     public partial class Startup {
@@ -27,6 +25,7 @@ namespace WebApplicationAPI {
             this.AuthConfigureServices(services);
             this.MvcConfigureServices(services);
             services.AddTransient<IPostService, PostService>();
+            services.AddAutoMapper(typeof(Startup));
 
             /*
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

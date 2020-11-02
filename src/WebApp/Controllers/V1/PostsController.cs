@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Contracts.V1.Requests;
@@ -11,19 +12,23 @@ using WebApplicationAPI.Contracts.V1.Responses;
 using WebApplicationAPI.Domain;
 using WebApplicationAPI.ExtensionMethods;
 using WebApplicationAPI.Services;
+using System.Collections.Generic;
 
 namespace WebApplicationAPI.Controllers.V1 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PostsController : Controller {
         private readonly IPostService postService;
+        private readonly IMapper mapper;
 
-        public PostsController(IPostService postService) {
+        public PostsController(IPostService postService, IMapper mapper) {
             this.postService = postService;
+            this.mapper = mapper;
         }
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
         public async Task<IActionResult> GetAll() {
-            return this.Ok(await postService.GetPostsAsync());
+            var posts = await postService.GetPostsAsync();
+            return this.Ok(this.mapper.Map<List<PostResponse>>(posts));
         }
 
         [HttpPut(ApiRoutes.Posts.Update)]
@@ -35,7 +40,7 @@ namespace WebApplicationAPI.Controllers.V1 {
             var post = await postService.GetPostByIdAsync(postId);
             post.Name = request.Name;
             var updated = await postService.UpdatePostAsync(post);
-            if (updated) return this.Ok(post);
+            if (updated) return this.Ok(this.mapper.Map<PostResponse>(post));
             return this.NotFound();
         }
 
@@ -54,7 +59,7 @@ namespace WebApplicationAPI.Controllers.V1 {
         public async Task<IActionResult> Get([FromRoute] Guid postId) {
             var post = await postService.GetPostByIdAsync(postId);
             if (post == null) return this.NotFound();
-            return this.Ok(post);
+            return this.Ok(this.mapper.Map<PostResponse>(post));
         }
 
         [HttpPost(ApiRoutes.Posts.Create)]
@@ -74,8 +79,7 @@ namespace WebApplicationAPI.Controllers.V1 {
             await postService.CreatePostAsync(post);
             var baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id.ToString());
-            var response = new PostResponse { Id = post.Id };
-            return this.Created(locationUri, response);
+            return this.Created(locationUri, this.mapper.Map<PostResponse>(post));
         }
     }
 }

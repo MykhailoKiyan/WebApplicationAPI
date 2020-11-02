@@ -27,7 +27,7 @@ namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
             var createdPost = await this.CreatePostAsync(client, new PostCreateRequest { Name = postName });
 
             // Act
-            var (response, result) = await client.ExecuteRequest<Post>(HttpMethod.Get, ApiRoutes.Posts.Get.Replace("{postId}", createdPost.Id.ToString()));
+            var (response, result) = await client.ExecuteRequest<PostResponse>(HttpMethod.Get, ApiRoutes.Posts.Get.Replace("{postId}", createdPost.Id.ToString()));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
