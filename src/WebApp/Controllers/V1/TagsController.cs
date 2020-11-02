@@ -37,6 +37,7 @@ namespace WebApplicationAPI.Controllers.V1 {
             else return this.Ok(this.mapper.Map<TagResponse>(tag));
         }
 
+        [HttpPost(ApiRoutes.Tags.Create)]
         public async Task<IActionResult> Create([FromBody] TagCreateRequest request) {
             var tag = new Domain.Tag {
                 Name = request.TagName,

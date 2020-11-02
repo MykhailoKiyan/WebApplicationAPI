@@ -73,7 +73,7 @@ namespace WebApplicationAPI.Services {
 
         public async Task<bool> CreateTagAsync(Tag tag) {
             tag.Name = tag.Name.ToLower();
-            var existingTag = this.dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(t => t.Name == tag.Name);
+            var existingTag = await this.dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(t => t.Name == tag.Name);
             if (existingTag != null) return true;
             await this.dataContext.Tags.AddAsync(tag);
             var createdCount = await this.dataContext.SaveChangesAsync();

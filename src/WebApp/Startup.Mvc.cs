@@ -1,15 +1,21 @@
 ﻿using System.Collections.Generic;
-
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 using WebApplicationAPI.Authorization;
+using WebApplicationAPI.Filters;
 
 namespace WebApplicationAPI {
     public partial class Startup {
         partial void MvcConfigureServices(IServiceCollection services) {
-            services.AddMvc(options => { options.EnableEndpointRouting = false; });
+            services
+                .AddMvc(options => {
+                    options.EnableEndpointRouting = false;
+                    options.Filters.Add<ValidationFilter>();
+                })
+                .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddAuthorization(options => {
                 options.AddPolicy("MustWorkForCompany", policy => {
