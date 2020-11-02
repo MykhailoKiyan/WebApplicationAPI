@@ -217,3 +217,6 @@ dotnet_diagnostic.SA1505.severity = silent
 
 # SA1400: Access modifier should be declared
 dotnet_diagnostic.SA1400.severity = silent
+
+# SA1629: Documentation text should end with a period
+dotnet_diagnostic.SA1629.severity = silent

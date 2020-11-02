@@ -24,6 +24,7 @@ namespace WebApplicationAPI {
             this.DataConfigureServices(services);
             this.AuthConfigureServices(services);
             this.MvcConfigureServices(services);
+            this.SwaggerConfigureServices(services);
             services.AddTransient<IPostService, PostService>();
             services.AddAutoMapper(typeof(Startup));
 
@@ -100,5 +101,7 @@ namespace WebApplicationAPI {
         partial void MvcConfigureServices(IServiceCollection services);
 
         partial void AuthConfigureServices(IServiceCollection services);
+
+        partial void SwaggerConfigureServices(IServiceCollection services);
     }
 }

@@ -14,6 +14,7 @@ using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI.Controllers.V1 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Produces("application/json")]
     public class TagsController : Controller {
         private readonly IPostService postService;
         private readonly IMapper mapper;
@@ -23,6 +24,10 @@ namespace WebApplicationAPI.Controllers.V1 {
             this.mapper = mapper;
         }
 
+        /// <summary>
+        /// Returns all the tags in the system
+        /// </summary>
+        /// <response code="200">Success</response>
         [HttpGet(ApiRoutes.Tags.GetAll)]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll() {
@@ -37,7 +42,15 @@ namespace WebApplicationAPI.Controllers.V1 {
             else return this.Ok(this.mapper.Map<TagResponse>(tag));
         }
 
+        /// <summary>
+        /// Creates a tag in the system
+        /// </summary>
+        /// <response code="201">Created</response>
+        /// <response code="400">Unable to craete the tag due to validation error</response>
+        /// <returns>A <see cref="Task"/>Http resut</returns>
         [HttpPost(ApiRoutes.Tags.Create)]
+        [ProducesResponseType(typeof(TagResponse), 201)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> Create([FromBody] TagCreateRequest request) {
             var tag = new Domain.Tag {
                 Name = request.TagName,
@@ -46,7 +59,12 @@ namespace WebApplicationAPI.Controllers.V1 {
             };
 
             var isCreated = await this.postService.CreateTagAsync(tag);
-            if (!isCreated) return this.BadRequest(new { error = "Unable to create tag." });
+            if (!isCreated) {
+                var errorResponse = new ErrorResponse();
+                errorResponse.Errors.Add(new ErrorModel { Message = "Unable to create tag" });
+                return this.BadRequest(errorResponse);
+            }
+
             var baseUrl = $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Tags.Get.Replace("{tagName}", tag.Name);
             return this.Created(locationUri, this.mapper.Map<TagResponse>(tag));

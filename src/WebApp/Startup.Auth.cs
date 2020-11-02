@@ -1,9 +1,11 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
+using WebApplicationAPI.Authorization;
 using WebApplicationAPI.Options;
 using WebApplicationAPI.Services;
 
@@ -22,7 +24,6 @@ namespace WebApplicationAPI {
                 RequireExpirationTime = false,
                 ValidateLifetime = true
             };
-
             services.AddSingleton(tokenValidationParameters);
 
             services
@@ -36,6 +37,13 @@ namespace WebApplicationAPI {
                     options.TokenValidationParameters = tokenValidationParameters;
                 });
 
+            services.AddAuthorization(options => {
+                options.AddPolicy("MustWorkForCompany", policy => {
+                    policy.AddRequirements(new WorksForCompanyRequirement("google.com"));
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
             services.AddScoped<IIdentityService, IdentityService>();
         }
     }
