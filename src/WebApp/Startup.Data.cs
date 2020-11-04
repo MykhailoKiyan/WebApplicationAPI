@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using WebApplicationAPI.Cache;
 using WebApplicationAPI.Data;
 using WebApplicationAPI.Domain.Identity;
+using WebApplicationAPI.Services;
 
 namespace WebApplicationAPI {
     public partial class Startup {
@@ -32,6 +34,14 @@ namespace WebApplicationAPI {
             builder.AddRoleValidator<RoleValidator<Role>>();
             builder.AddRoleManager<RoleManager<Role>>();
             builder.AddSignInManager<SignInManager<User>>();
+
+            var redisCasheSettings = new RedisCacheSettings();
+            this.Configuration.GetSection(nameof(RedisCacheSettings)).Bind(redisCasheSettings);
+            services.AddSingleton(redisCasheSettings);
+            if (redisCasheSettings.Enabled) {
+                services.AddStackExchangeRedisCache(options => options.Configuration = redisCasheSettings.ConnectionString);
+                services.AddSingleton<IResponseCachService, ResponseCachService>();
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using WebApplicationAPI.Cache;
 using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Contracts.V1.Requests;
 using WebApplicationAPI.Contracts.V1.Responses;
@@ -26,6 +27,7 @@ namespace WebApplicationAPI.Controllers.V1 {
         }
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
+        [Cached(600)]
         public async Task<IActionResult> GetAll() {
             var posts = await postService.GetPostsAsync();
             return this.Ok(this.mapper.Map<List<PostResponse>>(posts));
@@ -56,6 +58,7 @@ namespace WebApplicationAPI.Controllers.V1 {
         }
 
         [HttpGet(ApiRoutes.Posts.Get)]
+        [Cached(600)]
         public async Task<IActionResult> Get([FromRoute] Guid postId) {
             var post = await postService.GetPostByIdAsync(postId);
             if (post == null) return this.NotFound();

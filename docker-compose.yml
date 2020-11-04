@@ -15,9 +15,10 @@ services:
       - "7001:443"
     depends_on:
       - db-server
+      - redis
     networks:
       - localdev
-        
+
   db-server:
     image: microsoft/mssql-server-linux:2017-latest
     container_name: db-server
@@ -26,5 +27,13 @@ services:
       - MSSQL_SA_PASSWORD=MyStrong_Passw0rd
     ports:
       - "1400:1433"
+    networks:
+      - localdev
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6388"
     networks:
       - localdev
