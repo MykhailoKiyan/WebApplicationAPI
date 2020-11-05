@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using WebApplicationAPI.Domain;
+
 namespace WebApplicationAPI.Services {
     public interface IPostService {
-        Task<List<Domain.Post>> GetPostsAsync();
+        Task<List<Domain.Post>> GetPostsAsync(PaginationFilter? paginationFilter = null);
 
         Task<bool> CreatePostAsync(Domain.Post post);
 

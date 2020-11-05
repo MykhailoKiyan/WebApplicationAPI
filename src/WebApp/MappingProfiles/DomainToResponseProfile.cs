@@ -4,7 +4,7 @@ using AutoMapper;
 using WebApplicationAPI.Contracts.V1.Responses;
 using WebApplicationAPI.Domain;
 
-namespace WebApplicationAPI.Mapping {
+namespace WebApplicationAPI.MappingProfiles {
     public class DomainToResponseProfile : Profile {
         public DomainToResponseProfile() {
             this.CreateMap<Tag, TagResponse>();

@@ -17,8 +17,17 @@ namespace WebApplicationAPI.Services {
             this.dataContext = dataContext;
         }
 
-        public async Task<List<Post>> GetPostsAsync() {
-            return await dataContext.Posts.Include(x => x.Tags).ToListAsync();
+        public async Task<List<Post>> GetPostsAsync(PaginationFilter? paginationFilter = null) {
+            IQueryable<Post> postsQuery = dataContext.Posts.Include(x => x.Tags);
+            var size = 100;
+
+            if (paginationFilter != null) {
+                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+                size = paginationFilter.PageSize;
+                postsQuery = postsQuery.Skip(skip);
+            }
+
+            return await postsQuery.Take(size).ToListAsync();
         }
 
         public async Task<Post> GetPostByIdAsync(Guid postId) {
