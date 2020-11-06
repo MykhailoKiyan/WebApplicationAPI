@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using StackExchange.Redis;
+
 using WebApplicationAPI.Cache;
 using WebApplicationAPI.Data;
 using WebApplicationAPI.Domain.Identity;
@@ -39,6 +41,7 @@ namespace WebApplicationAPI {
             this.Configuration.GetSection(nameof(RedisCacheSettings)).Bind(redisCasheSettings);
             services.AddSingleton(redisCasheSettings);
             if (redisCasheSettings.Enabled) {
+                services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisCasheSettings.ConnectionString));
                 services.AddStackExchangeRedisCache(options => options.Configuration = redisCasheSettings.ConnectionString);
                 services.AddSingleton<IResponseCachService, ResponseCachService>();
             }

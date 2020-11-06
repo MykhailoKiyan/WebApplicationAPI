@@ -11,6 +11,11 @@ using SwaggerOptions = WebApplicationAPI.Options.SwaggerOptions;
 using AutoMapper;
 
 using WebApplicationAPI.Services;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using WebApplicationAPI.Contracts.HealthChecks;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace WebApplicationAPI {
     public partial class Startup {
@@ -24,6 +29,7 @@ namespace WebApplicationAPI {
             this.DataConfigureServices(services);
             this.AuthConfigureServices(services);
             this.MvcConfigureServices(services);
+            this.HelthChecksConfigureServices(services);
             this.SwaggerConfigureServices(services);
             services.AddTransient<IPostService, PostService>();
             services.AddAutoMapper(typeof(Startup));
@@ -72,6 +78,22 @@ namespace WebApplicationAPI {
                 app.UseHsts();
             }
 
+            app.UseHealthChecks("/health", new HealthCheckOptions {
+                ResponseWriter = async (context, report) => {
+                    context.Response.ContentType = "application/json";
+                    var response = new HealthCheckResponse {
+                        Statuc = report.Status.ToString(),
+                        Checks = report.Entries.Select(x => new HealthCheck {
+                            Component = x.Key,
+                            Status = x.Value.Status.ToString(),
+                            Description = x.Value.Description
+                        }),
+                        Duration = report.TotalDuration
+                    };
+
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+                }
+            });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
@@ -103,5 +125,7 @@ namespace WebApplicationAPI {
         partial void AuthConfigureServices(IServiceCollection services);
 
         partial void SwaggerConfigureServices(IServiceCollection services);
+
+        partial void HelthChecksConfigureServices(IServiceCollection services);
     }
 }
