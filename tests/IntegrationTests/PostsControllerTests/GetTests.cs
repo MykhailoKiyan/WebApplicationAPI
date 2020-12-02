@@ -27,12 +27,12 @@ namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
             var createdPost = await this.CreatePostAsync(client, new PostCreateRequest { Name = postName });
 
             // Act
-            var (response, result) = await client.ExecuteRequest<PostResponse>(HttpMethod.Get, ApiRoutes.Posts.Get.Replace("{postId}", createdPost.Id.ToString()));
+            var (response, result) = await client.ExecuteRequest<Response<PostResponse>>(HttpMethod.Get, ApiRoutes.Posts.Get.Replace("{postId}", createdPost.Data.Id.ToString()));
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Id.Should().Be(createdPost.Id);
-            result.Name.Should().Be(postName);
+            result.Data.Id.Should().Be(createdPost.Data.Id);
+            result.Data.Name.Should().Be(postName);
         }
     }
 }

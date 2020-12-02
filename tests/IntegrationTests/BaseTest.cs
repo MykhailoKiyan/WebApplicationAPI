@@ -65,10 +65,9 @@ namespace WebApplicationAPI.IntegrationTests {
             new TestDataSeeder(db).Seed();
         }
 
-        protected async Task<PostResponse> CreatePostAsync(HttpClient client, PostCreateRequest post) {
-            var (response, _) = await client.ExecuteRequest<PostCreateRequest>(HttpMethod.Post, ApiRoutes.Posts.Create, post);
-            return await response.Content.ReadAsAsync<PostResponse>();
-
+        protected async Task<Response<PostResponse>> CreatePostAsync(HttpClient client, PostCreateRequest post) {
+            var (response, _) = await client.ExecuteRequest<Response<PostResponse>>(HttpMethod.Post, ApiRoutes.Posts.Create, post);
+            return await response.Content.ReadAsAsync<Response<PostResponse>>();
         }
     }
 }

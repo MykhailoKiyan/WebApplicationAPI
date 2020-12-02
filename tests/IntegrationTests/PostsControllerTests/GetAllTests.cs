@@ -11,6 +11,7 @@ using WebApplicationAPI.Contracts.V1;
 using WebApplicationAPI.Domain;
 using Microsoft.AspNetCore.Mvc.Testing;
 using WebApplicationAPI.IntegrationTests.Extensions;
+using WebApplicationAPI.Contracts.V1.Responses;
 
 namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
     public class GetAllTests : BaseTest {
@@ -24,12 +25,12 @@ namespace WebApplicationAPI.IntegrationTests.PostsControllerTests {
             await client.AuthenticateAsync();
 
             // Act
-            var (response, result) = await client.ExecuteRequest<List<Post>>(HttpMethod.Get, ApiRoutes.Posts.GetAll);
+            var (response, result) = await client.ExecuteRequest<PagedResponse<PostResponse>>(HttpMethod.Get, ApiRoutes.Posts.GetAll);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var posts = await response.Content.ReadAsAsync<List<Post>>();
-            posts.Should().BeEmpty();
+            var posts = await response.Content.ReadAsAsync<PagedResponse<PostResponse>>();
+            posts.Data.Should().BeEmpty();
         }
     }
 }

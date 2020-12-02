@@ -4,15 +4,15 @@ using System.Text;
 
 namespace WebApplicationAPI.Contracts.V1.Responses {
     public class PagedResponse<T> {
-        public IEnumerable<T> Data { get; private set; }
+        public IEnumerable<T> Data { get; set; }
 
-        public int? PageNumber { get; private set; }
+        public int? PageNumber { get; set; }
 
-        public int? PageSize { get; private set; }
+        public int? PageSize { get; set; }
 
-        public string? PreviosPage { get; private set; }
+        public string? PreviosPage { get; set; }
 
-        public string? NextPage { get; private set; }
+        public string? NextPage { get; set; }
 
         public PagedResponse() { }
 
