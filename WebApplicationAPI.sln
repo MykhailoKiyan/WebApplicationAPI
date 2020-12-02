@@ -11,11 +11,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "tests\I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationAPI", "src\WebApp\WebApplicationAPI.csproj", "{E0B6A377-90C5-4FB7-8FA6-1B2FF1412552}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationSDK", "src\WebApplicationSDK\WebApplicationSDK.csproj", "{DEA785D3-9DB8-43DA-A293-1159818CBE0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationSDK", "src\WebApplicationSDK\WebApplicationSDK.csproj", "{DEA785D3-9DB8-43DA-A293-1159818CBE0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationSDK.Sample", "src\WebApplicationSDK.Sample\WebApplicationSDK.Sample.csproj", "{214D4BDE-527B-4046-9EA9-DA4BA0EA2E62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationSDK.Sample", "src\WebApplicationSDK.Sample\WebApplicationSDK.Sample.csproj", "{214D4BDE-527B-4046-9EA9-DA4BA0EA2E62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationAPI.Contracts", "src\WebApplicationAPI.Contracts\WebApplicationAPI.Contracts.csproj", "{E132E156-9F76-4BA4-A3E4-2391B9C21606}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationAPI.Contracts", "src\WebApplicationAPI.Contracts\WebApplicationAPI.Contracts.csproj", "{E132E156-9F76-4BA4-A3E4-2391B9C21606}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastracture", "Infrastracture", "{5C785D65-9F89-4B1D-9E31-37543B96DEE3}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\aspdotnetcore.yml = .github\workflows\aspdotnetcore.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
