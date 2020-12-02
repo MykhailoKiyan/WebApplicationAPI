@@ -6,7 +6,9 @@ using WebApplicationAPI.Domain;
 
 namespace WebApplicationAPI.Services {
     public interface IPostService {
-        Task<List<Domain.Post>> GetPostsAsync(PaginationFilter? paginationFilter = null);
+        Task<List<Domain.Post>> GetPostsAsync(
+            GetAllPostsFilter? postsFilter = null,
+            Domain.PaginationFilter? paginationFilter = null);
 
         Task<bool> CreatePostAsync(Domain.Post post);
 

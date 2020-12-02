@@ -34,9 +34,13 @@ namespace WebApplicationAPI.Controllers.V1 {
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
         [Cached(600)]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationQuery query) {
-            var paginationFilter = this.mapper.Map<PaginationFilter>(query);
-            var posts = await postService.GetPostsAsync(paginationFilter);
+        public async Task<IActionResult> GetAll(
+                [FromQuery] GetAllPostsQuery? query,
+                [FromQuery] PaginationQuery? paginationQuery) {
+
+            var paginationFilter = this.mapper.Map<PaginationFilter>(paginationQuery);
+            var postsFilter = this.mapper.Map<GetAllPostsFilter>(query);
+            var posts = await postService.GetPostsAsync(postsFilter, paginationFilter);
             var postsResponse = this.mapper.Map<List<PostResponse>>(posts);
             if (paginationFilter == null || paginationFilter.PageNumber < 1 || paginationFilter.PageSize < 1)
                 return this.Ok(new PagedResponse<PostResponse>(postsResponse));
